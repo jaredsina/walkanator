@@ -35,20 +35,22 @@ transform = transforms.Compose([
     )
 ])
 
-image = transform(
-    Image.open(
-        BytesIO(
-            requests.get("https://tse2.mm.bing.net/th/id/OIP.6z23o50KM2krS7b6D9DtKAHaE8?r=0&pid=Api").content
-        )
-    ).convert("RGB")
-).unsqueeze(0).to(device)
 
-# Predict
-with torch.no_grad():
-    logits = model(image)
-    top_k = torch.topk(logits, 5)
-    probs = torch.softmax(logits, dim=1)
+#image = transform(
+#    Image.open(
+#        BytesIO(
+#            requests.get("https://tse2.mm.bing.net/th/id/OIP.6z23o50KM2krS7b6D9DtKAHaE8?r=0&pid=Api").content
+#        )
+#    ).convert("RGB")
+#).unsqueeze(0).to(device)
 
-print(f"Top-1: {idx_to_name[top_k.indices[0, 0].item()]} ({probs.max().item():.2%})")
-for i, idx in enumerate(top_k.indices[0]):
-    print(f"  Top-{i+1}: class {idx.item()} = {idx_to_name[idx.item()]} ({probs[0, idx].item():.2%})")
+
+def predict(img):
+    with torch.no_grad():
+        logits = model(image)
+        top_k = torch.topk(logits, 5)
+        probs = torch.softmax(logits, dim=1)
+    return (idx_to_name[top_k.indices[0, 0].item()], probs.max().item())
+
+
+#print(predict(image)[0])

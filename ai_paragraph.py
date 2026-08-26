@@ -12,7 +12,9 @@ llm = Llama(
 
 )
 """
+ 
 from ollama import chat
+nameInput = "common house spider"
 
 response = chat(
     
@@ -20,7 +22,7 @@ response = chat(
     messages = [
         {
             "role":"user",
-            "content":"what is a llama, write a paragraph?"
+              "content":f"what is a {nameInput}, write a paragraph?"
         }
     ]
     

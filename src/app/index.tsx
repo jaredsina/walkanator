@@ -1,85 +1,126 @@
-
 import { Colors } from "@/constants/theme";
 import { Button, Host } from "@expo/ui";
-import Geolocation from '@react-native-community/geolocation';
-import type { CSSProperties } from "react";
-import React from "react";
-//....
-function getLocation(): Promise<String> {
-  return new Promise((resolve, reject) => {
-    Geolocation.getCurrentPosition(
-      (info) => {
-        resolve(`${info.coords.latitude}, ${info.coords.longitude}`);
-      },
-      (error) => {
-        reject(error);
-      }
-    );
-  });
-}
-
-function nav() {
-  console.log("paein")
-}
+import * as Location from "expo-location";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
+  const [location, setLocation] = useState<string | null>(null);
+  const [locationError, setLocationError] = useState<string | null>(null);
+  const [loadingLocation, setLoadingLocation] = useState(true);
 
+  useEffect(() => {
+    let isMounted = true;
 
-  // defo not how youre 'supposed' to do this 
-  // but uh idc
-  const main: CSSProperties = {
-      width: "100%",
-      height: "100%",
-      background: Colors.background,
-      color: Colors.text,
+    async function fetchLocation() {
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          if (isMounted) {
+            setLocationError("Permission to access location was denied");
+            setLoadingLocation(false);
+          }
+          return;
+        }
+
+        const position = await Location.getCurrentPositionAsync({});
+        if (isMounted) {
+          setLocation(
+            `${position.coords.latitude}, ${position.coords.longitude}`
+          );
+          setLoadingLocation(false);
+        }
+      } catch (error) {
+        if (isMounted) {
+          const message =
+            error instanceof Error ? error.message : "Failed to get location";
+          setLocationError(message);
+          setLoadingLocation(false);
+        }
+      }
+    }
+
+    fetchLocation();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  function handleTakePhoto() {
+    console.log("paein");
   }
 
-  const head: CSSProperties= {
-    textAlign: "center"
-  }
-  // placeholder :: just a black square for now
-  const iMap: CSSProperties = {
-    background: "black",
-    width: "80vmin",
-    height: "40vh",
-    margin: "auto",
-    marginTop: "5%",
-  }
-  
-  const cornerStuff: CSSProperties = {
-    position: "fixed",
-    bottom: 0, 
-    left: 0,
-  }
+  const locationText = loadingLocation
+    ? "Loading..."
+    : locationError
+      ? locationError
+      : location ?? "Unknown";
 
   return (
-      <div style={main}>
-        <div style={head}>
-          <h1 style={{fontSize:"3em", marginBottom: "0"}}>
-            Almanac
-          </h1>
-          <span style={{fontSize: "1.5em"}}>Sign in</span>
-        </div>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Almanac</Text>
+        <Text style={styles.subtitle}>Sign in</Text>
+      </View>
 
-        <div style={{textAlign:"center"}}>
-          <div style={iMap}></div>
-          <span style={{fontSize: "1.5em"}}>Location: {getLocation()}</span>
-        </div>
+      <View style={styles.mapSection}>
+        <View style={styles.mapPlaceholder} />
+        <Text style={styles.locationText}>Location: {locationText}</Text>
+      </View>
 
-        <div style={cornerStuff}>
-
+      <View style={styles.cornerStuff}>
         <Host matchContents>
-              <Button
-                onPress={nav}
-              >
-               <span>Take photo!</span>
-              </Button>               
-          </Host> 
-
-        </div>
-
-      </div>
+          <Button label="Take photo!" onPress={handleTakePhoto} />
+        </Host>
+      </View>
+    </SafeAreaView>
   );
 }
 
-
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.background,
+  },
+  header: {
+    alignItems: "center",
+    paddingTop: 16,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: "bold",
+    color: Colors.text,
+    marginBottom: 0,
+    textAlign: "center",
+  },
+  subtitle: {
+    fontSize: 18,
+    color: Colors.text,
+    textAlign: "center",
+  },
+  mapSection: {
+    alignItems: "center",
+    marginTop: 24,
+  },
+  mapPlaceholder: {
+    backgroundColor: "black",
+    width: "80%",
+    height: 200,
+    alignSelf: "center",
+    marginTop: 8,
+    borderRadius: 8,
+  },
+  locationText: {
+    fontSize: 16,
+    color: Colors.text,
+    textAlign: "center",
+    marginTop: 12,
+  },
+  cornerStuff: {
+    position: "absolute",
+    bottom: 16,
+    left: 16,
+  },
+});

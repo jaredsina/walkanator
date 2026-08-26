@@ -1,10 +1,9 @@
 
 import { Colors } from "@/constants/theme";
+import { Button, Host } from "@expo/ui";
 import Geolocation from '@react-native-community/geolocation';
 import type { CSSProperties } from "react";
 import React from "react";
-
-
 //....
 function getLocation(): Promise<String> {
   return new Promise((resolve, reject) => {
@@ -17,6 +16,10 @@ function getLocation(): Promise<String> {
       }
     );
   });
+}
+
+function nav() {
+  console.log("paein")
 }
 
 export default function HomeScreen() {
@@ -43,6 +46,11 @@ export default function HomeScreen() {
     marginTop: "5%",
   }
   
+  const cornerStuff: CSSProperties = {
+    position: "fixed",
+    bottom: 0, 
+    left: 0,
+  }
 
   return (
       <div style={main}>
@@ -58,8 +66,16 @@ export default function HomeScreen() {
           <span style={{fontSize: "1.5em"}}>Location: {getLocation()}</span>
         </div>
 
-        <div style={{}}>
-          Corner stuff
+        <div style={cornerStuff}>
+
+        <Host matchContents>
+              <Button
+                onPress={nav}
+              >
+               <span>Take photo!</span>
+              </Button>               
+          </Host> 
+
         </div>
 
       </div>

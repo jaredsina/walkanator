@@ -1,8 +1,7 @@
 import { Colors } from "@/constants/theme";
-import { Button, Host } from "@expo/ui";
 import * as Location from "expo-location";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
@@ -70,10 +69,16 @@ export default function HomeScreen() {
         <Text style={styles.locationText}>Location: {locationText}</Text>
       </View>
 
-      <View style={styles.cornerStuff}>
-        <Host matchContents>
-          <Button label="Take photo!" onPress={handleTakePhoto} />
-        </Host>
+      <View style={styles.bottomBar}>
+          <Pressable
+            key={"camera"}
+            style={({ pressed }) => [styles.circleButton, pressed && styles.circleButtonPressed]}
+            onPress={handleTakePhoto}
+            accessibilityLabel={"Take a photo!"}
+            accessibilityRole="button"
+          >
+            <Text style={styles.circleButtonText}></Text>
+          </Pressable>
       </View>
     </SafeAreaView>
   );
@@ -102,12 +107,15 @@ const styles = StyleSheet.create({
   },
   mapSection: {
     alignItems: "center",
+    alignSelf: "center",
+    height: "50%",
+    width: "60%",
     marginTop: 24,
   },
   mapPlaceholder: {
     backgroundColor: "black",
-    width: "80%",
-    height: 200,
+    width: "100%",
+    height: "100%",
     alignSelf: "center",
     marginTop: 8,
     borderRadius: 8,
@@ -118,9 +126,39 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 12,
   },
-  cornerStuff: {
-    position: "absolute",
-    bottom: 16,
-    left: 16,
+  bottomBar: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 16,
+    marginTop: 50,
+    paddingHorizontal: 16,
+    paddingBottom: 24,
+    alignSelf: "stretch",
+  },
+  circleButton: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: Colors.backgroundElement,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  circleButtonPressed: {
+    backgroundColor: Colors.backgroundSelected,
+    opacity: 0.9,
+    transform: [{ scale: 0.96 }],
+  },
+  circleButtonText: {
+    fontSize: 28,
+    color: Colors.textSecondary,
+    textAlign: "center",
+    lineHeight: 32,
   },
 });
+

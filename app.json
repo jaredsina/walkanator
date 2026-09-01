@@ -10,7 +10,8 @@
     "ios": {
       "icon": "./assets/expo.icon",
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "Allow $(PRODUCT_NAME) to use your location to show where you are on the map."
+        "NSLocationWhenInUseUsageDescription": "Allow $(PRODUCT_NAME) to use your location to show where you are on the map.",
+        "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to use your camera to take photos."
       }
     },
     "android": {
@@ -40,6 +41,12 @@
         "expo-location",
         {
           "locationWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location to show where you are on the map."
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to use your camera to take photos."
         }
       ]
     ],

@@ -1,14 +1,20 @@
 import { Colors } from "@/constants/theme";
+import { CameraView } from "expo-camera";
 import * as Location from "expo-location";
-import React, { useEffect, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+//eslint-disable-next-line
+import c from "../../assets/images/photo.png";
 export default function HomeScreen() {
   const [location, setLocation] = useState<string | null>(null);
   const [locationError, setLocationError] = useState<string | null>(null);
   const [loadingLocation, setLoadingLocation] = useState(true);
 
+  const cameraRef = useRef<CameraView>(null);
+
+  const [photo, setPhoto] = useState<string | null>(null);
   useEffect(() => {
     let isMounted = true;
 
@@ -47,8 +53,21 @@ export default function HomeScreen() {
     };
   }, []);
 
+
+  const takePhoto = async () => {
+    if (!cameraRef.current) return;
+
+    const result = await cameraRef.current.takePictureAsync();
+
+    if (result) {
+      setPhoto(result.uri);
+    }
+  };
   function handleTakePhoto() {
-    console.log("paein");
+    console.log("test")
+    takePhoto()
+    console.log(photo)
+    console.log("2")
   }
 
   const locationText = loadingLocation
@@ -72,13 +91,20 @@ export default function HomeScreen() {
       <View style={styles.bottomBar}>
           <Pressable
             key={"camera"}
-            style={({ pressed }) => [styles.circleButton, pressed && styles.circleButtonPressed]}
+            style={({pressed}) => [styles.circleButton, pressed && styles.circleButtonPressed]}
             onPress={handleTakePhoto}
             accessibilityLabel={"Take a photo!"}
             accessibilityRole="button"
           >
-            <Text style={styles.circleButtonText}></Text>
+            <CameraView
+        ref={cameraRef}
+        style={{ flex: 1 }}
+        facing="back"
+      />
+
+            <Image source={c} style={styles.circleButtonImg}></Image>
           </Pressable>
+
       </View>
     </SafeAreaView>
   );
@@ -108,8 +134,8 @@ const styles = StyleSheet.create({
   mapSection: {
     alignItems: "center",
     alignSelf: "center",
-    height: "50%",
-    width: "60%",
+    height: "60%",
+    width: "80%",
     marginTop: 24,
   },
   mapPlaceholder: {
@@ -137,28 +163,22 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
   },
   circleButton: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: Colors.backgroundElement,
+    width: 72,
+    height: 72,
+    borderRadius: 64,
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
     elevation: 3,
   },
+
   circleButtonPressed: {
-    backgroundColor: Colors.backgroundSelected,
-    opacity: 0.9,
-    transform: [{ scale: 0.96 }],
+    borderWidth: 5,
+    borderColor: "#fff",
+    
   },
-  circleButtonText: {
-    fontSize: 28,
-    color: Colors.textSecondary,
-    textAlign: "center",
-    lineHeight: 32,
-  },
+  circleButtonImg: {
+    width: 128,
+    height: 128
+  }
 });
 

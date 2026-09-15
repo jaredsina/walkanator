@@ -64,7 +64,6 @@ export default function HomeScreen() {
     }
   };
   function handleTakePhoto() {
-    console.log("test");
     takePhoto();
     console.log(photo);
     console.log("2");
@@ -164,6 +163,7 @@ const styles = StyleSheet.create({
     width: 72,
     height: 72,
     borderRadius: 64,
+    marginTop: 64,
     justifyContent: "center",
     alignItems: "center",
     elevation: 3,

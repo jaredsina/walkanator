@@ -170,11 +170,14 @@ const styles = StyleSheet.create({
   },
 
   circleButtonPressed: {
-    borderWidth: 5,
+    borderWidth: 3,
     borderColor: "#fff",
+    backgroundColor: "#000"
+  
   },
   circleButtonImg: {
     width: 128,
     height: 128,
+
   },
 });

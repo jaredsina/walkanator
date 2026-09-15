@@ -1,4 +1,4 @@
-import MapView from "@/components/MapView.web";
+import MapView from "@/components/MapView";
 import { Colors } from "@/constants/theme";
 import { CameraView } from "expo-camera";
 import * as Location from "expo-location";
@@ -33,7 +33,7 @@ export default function HomeScreen() {
         const position = await Location.getCurrentPositionAsync({});
         if (isMounted) {
           setLocation(
-            `${position.coords.latitude}, ${position.coords.longitude}`
+            `${position.coords.latitude}, ${position.coords.longitude}`,
           );
           setLoadingLocation(false);
         }
@@ -54,7 +54,6 @@ export default function HomeScreen() {
     };
   }, []);
 
-
   const takePhoto = async () => {
     if (!cameraRef.current) return;
 
@@ -65,17 +64,17 @@ export default function HomeScreen() {
     }
   };
   function handleTakePhoto() {
-    console.log("test")
-    takePhoto()
-    console.log(photo)
-    console.log("2")
+    console.log("test");
+    takePhoto();
+    console.log(photo);
+    console.log("2");
   }
 
   const locationText = loadingLocation
     ? "Loading..."
     : locationError
       ? locationError
-      : location ?? "Unknown";
+      : (location ?? "Unknown");
 
   return (
     <SafeAreaView style={styles.container}>
@@ -85,29 +84,25 @@ export default function HomeScreen() {
       </View>
 
       <View style={styles.mapSection}>
-        <MapView
-          style={styles.mapPlaceholder}
-        />        
+        <MapView style={styles.mapPlaceholder} />
         <Text style={styles.locationText}>Location: {locationText}</Text>
       </View>
 
       <View style={styles.bottomBar}>
-          <Pressable
-            key={"camera"}
-            style={({pressed}) => [styles.circleButton, pressed && styles.circleButtonPressed]}
-            onPress={handleTakePhoto}
-            accessibilityLabel={"Take a photo!"}
-            accessibilityRole="button"
-          >
-            <CameraView
-        ref={cameraRef}
-        style={{ flex: 1 }}
-        facing="back"
-      />
+        <Pressable
+          key={"camera"}
+          style={({ pressed }) => [
+            styles.circleButton,
+            pressed && styles.circleButtonPressed,
+          ]}
+          onPress={handleTakePhoto}
+          accessibilityLabel={"Take a photo!"}
+          accessibilityRole="button"
+        >
+          <CameraView ref={cameraRef} style={{ flex: 1 }} facing="back" />
 
-            <Image source={c} style={styles.circleButtonImg}></Image>
-          </Pressable>
-
+          <Image source={c} style={styles.circleButtonImg}></Image>
+        </Pressable>
       </View>
     </SafeAreaView>
   );
@@ -177,11 +172,9 @@ const styles = StyleSheet.create({
   circleButtonPressed: {
     borderWidth: 5,
     borderColor: "#fff",
-    
   },
   circleButtonImg: {
     width: 128,
-    height: 128
-  }
+    height: 128,
+  },
 });
-

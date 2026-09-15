@@ -1,3 +1,4 @@
+import MapView from "@/components/MapView.web";
 import { Colors } from "@/constants/theme";
 import { CameraView } from "expo-camera";
 import * as Location from "expo-location";
@@ -5,7 +6,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-//eslint-disable-next-line
+//@ts-expect-error
 import c from "../../assets/images/photo.png";
 export default function HomeScreen() {
   const [location, setLocation] = useState<string | null>(null);
@@ -84,7 +85,9 @@ export default function HomeScreen() {
       </View>
 
       <View style={styles.mapSection}>
-        <View style={styles.mapPlaceholder} />
+        <MapView
+          style={styles.mapPlaceholder}
+        />        
         <Text style={styles.locationText}>Location: {locationText}</Text>
       </View>
 
